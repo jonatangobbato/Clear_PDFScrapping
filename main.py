@@ -41,9 +41,8 @@ def criar_csv(operacoes):
     dict_writer.writerows(operacoes)
 
 def nome_acoes():
+  #Web Scrapping para identificar os códigos das ações, visto que as notas de negociação da clear são fornecidas com o nome da empresa.
   ativos_b3 = []
-  controller = 0
-  page = 1
   headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'}
   for i in range(ord('a'), ord('z')+1):
     html = requests.get('https://br.advfn.com/bolsa-de-valores/bovespa/{}'.format(chr(i).upper()), headers=headers).content
@@ -71,7 +70,6 @@ if __name__ == '__main__':
     directory = 'PDFs'
     operacoes_geral = []
     for filename in os.scandir(directory):
-      #print(filename.path)
       operacoes_nota = readpdf(filename.path)
       for operacao in operacoes_nota:
         operacoes_geral.append(operacao)
