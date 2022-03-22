@@ -8,18 +8,23 @@ import json
 
 def readpdf(file):
   with pdfplumber.open(file) as temp:
-    first_page = temp.pages[0]
-    teste = first_page.extract_text()
-    data_pregao = re.search("([0-9]{2}/[0-9]{2}/[0-9]{4})", teste)
+    first_page = temp.pages[0] #Exporta apenas a primeira página do arquivo (Ainda não sou o Luiz Barsi kkk)
+    teste = first_page.extract_text() #Extrai o texto da pagina
+    data_pregao = re.search("([0-9]{2}/[0-9]{2}/[0-9]{4})", teste) #Busca a primera ocorrência de data
     #print(data_pregao.group(1))
 
+    #Extrai todas as tabelas da primeira página
     tables = first_page.extract_tables(table_settings={"vertical_strategy": "lines",
                                                       "horizontal_strategy": "lines"})
     operacoes = []
+    #Itera as tabelas encontradas
     for table in tables:
       #print(table[0][0])
+      #Aqui tem o pulo do gato pra identificar se a tabela é a tabela das operações kkk
+      #Meu mestre de python chega tremer
       if table[0][0]== '':
         print(table[0])
+        #Estrutura os dados encotrados na tabela
         operacao = {
           'tipo_operacao' : table[0][2],
           'mercado' : table[0][3],
@@ -67,8 +72,9 @@ def nome_acoes():
 
 if __name__ == '__main__':
     #nome_acoes()
-    directory = 'PDFs'
+    directory = 'PDFs'      #Informa o caminho do diretório contendo os arquivos PDF
     operacoes_geral = []
+    #Itera o diretório em busca dos arquivos
     for filename in os.scandir(directory):
       operacoes_nota = readpdf(filename.path)
       for operacao in operacoes_nota:
